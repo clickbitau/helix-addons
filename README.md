@@ -1,37 +1,40 @@
 # Helix add-ons
 
-The add-on catalogue shipped with [Helix](https://github.com/clickbitau/helix): tracker
-indexers and music service plugins. Everything here is Helix-written — no
-Jackett/Prowlarr files (GPL) are bundled.
+Community-maintained add-on definitions for [Helix](https://github.com/clickbitau/helix):
+tracker indexers and music service plugins. All definitions here are original
+Helix/community work — no Jackett or Prowlarr definition files (GPL) are
+accepted or bundled.
 
 ## Indexers (`indexers/`)
 
-Cardigann-compatible YAML definitions, one file per tracker. Helix interprets
-them with its own engine (login `cookie`/`form`, GET/POST search paths, row and
-field selectors, the common filters, category mapping).
+Cardigann-compatible YAML definitions, one file per site. Helix interprets them
+with its own engine (login `cookie`/`form`, GET/POST search paths, row and field
+selectors, the common filters, category mapping).
 
-Install: drop the `.yml` into the server's data directory `indexers/` folder,
-or pick it in the console under Indexers → Add-ons.
+Install: drop the `.yml` into the server data directory's `indexers/` folder, or
+pick it in the console under Indexers → Add-ons.
 
-Note: TorrentBD is not here — it is a native client, not a definition. Its
-login is a pasted browser session (the site's login page is captcha'd), the
-session is bound to the browser that minted it, and searches run inside the
-server's own logged-in `tbd-browser` container over DevTools. That shape is not
-expressible in the YAML format.
+Note: some trackers are native Helix clients rather than definitions — the YAML
+format only covers what it can express.
 
 ## Music plugins (`plugins/`)
 
 Sandboxed JavaScript plugins — `manifest.json` + `plugin.js` (+ icon) per
 service. Install or update from the console's plugin section.
 
-| Plugin | Notes |
-|---|---|
-| `youtube-music` | YouTube Music search, library, playlists, history. Browser-cookie sign-in. |
-| `youtube-music-google` | YouTube Music via a Google Cloud project. |
-| `amazon-music` | Amazon Music search and library (web API). |
+## Disclaimer
 
-## Updating
+These definitions describe how to query third-party web sites. The authors and
+contributors are not affiliated with, endorsed by, or responsible for any site a
+definition targets. Use of any add-on is at your own risk; you are responsible
+for complying with each site's terms of use, robots and rate-limit policies,
+and the law where you are. No warranty of any kind is offered.
 
-These files are mirrored from the Helix server source
-(`server/internal/addons/indexers/defs/`, `server/internal/plugins/bundled/`).
-Fix them there, then copy the result here.
+## Contributing
+
+Pull requests welcome. Requirements:
+
+- Indexer definitions must be original work — do not submit files copied or
+  derived from Jackett/Prowlarr (GPL).
+- One tracker / one service per PR, tested against the live site.
+- Keep changes minimal and match the existing file style.
