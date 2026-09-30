@@ -24,11 +24,14 @@ service. Install or update from the console's plugin section.
 
 ## Disclaimer
 
-These definitions describe how to query third-party web sites. The authors and
-contributors are not affiliated with, endorsed by, or responsible for any site a
-definition targets. Use of any add-on is at your own risk; you are responsible
+Everything in this repository — whether written by Helix maintainers or by
+community contributors — is provided as-is, with no warranty and no liability
+accepted by anyone. These definitions describe how to query third-party web
+sites; the authors and contributors are not affiliated with, endorsed by, or
+responsible for any site an add-on targets, nor for what anyone does with an
+add-on. Use of any add-on is entirely at your own risk; you are responsible
 for complying with each site's terms of use, robots and rate-limit policies,
-and the law where you are. No warranty of any kind is offered.
+and the law where you are.
 
 ## Contributing
 
