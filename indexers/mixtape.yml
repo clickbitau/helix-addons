@@ -1,0 +1,42 @@
+# MixtapeTorrent — Helix-written definition (D38). Replaces the compiled-in
+# client. A result is a Drupal story page, not a torrent: the .torrent lives
+# in the story's attachments, so the first rows are resolved during the
+# search and stories without one (news posts) are dropped.
+id: mixtape
+name: MixtapeTorrent
+description: "Hip-hop mixtapes on a Drupal site. Music only. Its search is slow and reports no seeder counts; every release is offered as if it had one."
+language: en-US
+type: public
+links:
+  - http://www.mixtapetorrent.com/
+caps:
+  categorymappings:
+    - {id: 1, cat: Audio}
+search:
+  paths:
+    # "type:story" keeps Drupal to the pages that carry attachments.
+    - path: "/search/node/{{ pathescape .Keywords }}%20type:story"
+  rows:
+    selector: "dl.search-results dt:has(a)"
+    # Drupal's full-text search returns pages mentioning one word in
+    # passing; keep rows carrying every word of the query.
+    filters:
+      - name: andmatch
+  fields:
+    title:
+      selector: a
+    details:
+      selector: a
+      attribute: href
+    category:
+      text: Audio
+    # The tracker reports no counts at all, and score.go rejects zero
+    # seeders outright.
+    seeders:
+      text: "1"
+download:
+  selector: "table#attachments a[href$='.torrent'], a[href$='.torrent']"
+helix:
+  carries: [music]
+  expect: "form#search_theme_form, form.search-form, input[name='keys']"
+  resolveAtSearch: 8

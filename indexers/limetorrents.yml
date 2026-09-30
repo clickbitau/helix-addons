@@ -1,0 +1,57 @@
+# LimeTorrents — Helix-written definition (D38). Replaces the compiled-in
+# client. Every row carries a direct .torrent link keyed by info hash, so no
+# second fetch is owed at grab time.
+id: limetorrents
+name: LimeTorrents
+description: "A general public tracker. The domain rotates between TLDs; the address on the row is the one used, the others here are tried when it is down."
+language: en-US
+type: public
+links:
+  - https://www.limetorrents.fun/
+  - https://www.limetorrents.lol/
+caps:
+  categorymappings:
+    - {id: movies, cat: Movies}
+    - {id: tv, cat: TV}
+    - {id: music, cat: Audio}
+    - {id: games, cat: Console}
+    - {id: applications, cat: PC}
+    - {id: anime, cat: TV/Anime}
+    - {id: other, cat: Other}
+search:
+  paths:
+    - path: "/search/all/{{ pathescape .Keywords }}/"
+  rows:
+    # Sponsored rows interleave the real ones; a real row has a details page
+    # and a .torrent link.
+    selector: "table.table2 tr:has(.tt-name a[href$='.html']):has(a[href*='itorrents'][href*='.torrent'], a[href*='.torrent?title='])"
+  fields:
+    title:
+      selector: ".tt-name a[href$='.html']"
+    details:
+      selector: ".tt-name a[href$='.html']"
+      attribute: href
+    download:
+      selector: "a[href*='itorrents'][href*='.torrent'], a[href*='.torrent?title=']"
+      attribute: href
+    infohash:
+      selector: "a[href*='itorrents'][href*='.torrent'], a[href*='.torrent?title=']"
+      attribute: href
+      optional: true
+      filters:
+        - {regexp: "(?i)/torrent/([0-9a-f]{40})\\.torrent"}
+    date:
+      selector: "td:nth-child(2)"
+      optional: true
+    size:
+      selector: "td:nth-child(3)"
+      optional: true
+    seeders:
+      selector: "td.tdseed"
+      optional: true
+    leechers:
+      selector: "td.tdleech"
+      optional: true
+helix:
+  carries: [film, tv, anime, music, other]
+  expect: "table.table2"

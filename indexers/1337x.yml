@@ -1,0 +1,59 @@
+# 1337x — Helix-written definition (D38). Replaces the compiled-in client.
+id: 1337x
+name: 1337x
+description: "A general public tracker: film, television, music, games. Behind Cloudflare, so the solver is how the first search gets through. Rows link to a details page; the magnet is read from it at grab time."
+language: en-US
+type: public
+links:
+  - https://1337x.to/
+caps:
+  categorymappings:
+    - {id: Movies, cat: Movies}
+    - {id: TV, cat: TV}
+    - {id: Games, cat: Console}
+    - {id: Music, cat: Audio}
+    - {id: Apps, cat: PC}
+    - {id: XXX, cat: XXX}
+    - {id: Anime, cat: TV/Anime}
+    - {id: Documentaries, cat: TV/Documentary}
+    - {id: Other, cat: Other}
+search:
+  paths:
+    # Sorted by seeders: the one page fetched is all there is.
+    - path: "/sort-search/{{ pathescape .Keywords }}/seeders/desc/1/"
+  response:
+    # An empty search is a page titled "Error something went wrong." saying
+    # this. It is an answer, not an outage.
+    noResultsMessage: "No results were returned"
+  rows:
+    selector: "table.table-list tbody tr:has(a[href^='/torrent/'])"
+  fields:
+    title:
+      selector: "a[href^='/torrent/']"
+    details:
+      selector: "a[href^='/torrent/']"
+      attribute: href
+    seeders:
+      selector: "td.seeds"
+    leechers:
+      selector: "td.leeches"
+    size:
+      # The size cell repeats the seed count in a hidden span.
+      selector: "td.size"
+      remove: "span"
+    date:
+      selector: "td.coll-date"
+      optional: true
+download:
+  selector: "a[href^='magnet:']"
+helix:
+  carries: [film, tv, anime, music, other]
+  solver: required
+  expect: "table.table-list"
+  # 1337x turns sorted search off under load and answers "Bad search
+  # request" (same error-page title) — Jackett and Prowlarr have a
+  # disablesort setting for it. The plain search still answers: newest
+  # first, one page, and Helix ranks by seeders itself.
+  fallback:
+    when: "Bad search request"
+    path: "/search/{{ pathescape .Keywords }}/1/"

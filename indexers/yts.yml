@@ -1,0 +1,58 @@
+# YTS — Helix-written definition (D38). Replaces the compiled-in client.
+# Films only; one API row per film, every encode a torrent of its own.
+id: yts
+name: YTS
+description: "Films only, one release per encode. The domain rotates between TLDs; the address on the row is the one used."
+language: en-US
+type: public
+links:
+  - https://yts.gg/
+caps:
+  categorymappings:
+    - {id: movies, cat: Movies}
+search:
+  paths:
+    - path: /api/v2/list_movies.json
+      response:
+        type: json
+  inputs:
+    query_term: "{{ .Query.Term }}"
+    limit: "50"
+    sort_by: seeds
+  rows:
+    selector: data.movies
+    attribute: torrents
+    multiple: true
+  fields:
+    _movie:
+      selector: ..title
+    _year:
+      selector: ..year
+    _quality:
+      selector: quality
+    title:
+      text: "{{ .Result._movie }} ({{ .Result._year }}) {{ .Result._quality }}"
+    infohash:
+      selector: hash
+      filters:
+        - tolower
+    magnet:
+      text: "magnet:?xt=urn:btih:{{ .Result.infohash }}&dn={{ urlquery .Result.title }}"
+    details:
+      selector: ..url
+      optional: true
+    size:
+      selector: size_bytes
+      optional: true
+    seeders:
+      selector: seeds
+      optional: true
+    leechers:
+      selector: peers
+      optional: true
+    category:
+      text: movie
+helix:
+  carries: [film]
+  # A failed query answers {"status":"error"} with no data at all.
+  expect: data

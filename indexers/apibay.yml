@@ -1,0 +1,58 @@
+# The Pirate Bay through apibay.org — Helix-written definition (D38).
+# Replaces the compiled-in client. The site's search page is a Cloudflare
+# wall; apibay.org is its official read-only face and is not. It answers
+# info hashes, not magnets: the magnet is assembled here.
+id: apibay
+name: The Pirate Bay
+description: "The Pirate Bay through its own API. Everything public, no account, no Cloudflare."
+language: en-US
+type: public
+links:
+  - https://apibay.org/
+caps:
+  categorymappings:
+    - {id: 100, cat: Audio}
+    - {id: 200, cat: Movies}
+    - {id: 205, cat: TV}
+    - {id: 300, cat: PC}
+    - {id: 400, cat: Console}
+    - {id: 500, cat: XXX}
+    - {id: 600, cat: Other}
+    - {id: 601, cat: Books}
+search:
+  paths:
+    - path: /q.php
+      response:
+        type: json
+  headers:
+    Referer: https://thepiratebay.org/
+  inputs:
+    q: "{{ .Keywords }}"
+    # Every category; filtering is Helix's job.
+    cat: "0"
+  rows:
+    selector: $
+    # "No results returned" arrives as one fake row with id "0".
+    filters:
+      - {andmatch: '"id":"[1-9]'}
+  fields:
+    _id:
+      selector: id
+    title:
+      selector: name
+    infohash:
+      selector: info_hash
+      filters:
+        - tolower
+    magnet:
+      text: "magnet:?xt=urn:btih:{{ .Result.infohash }}&dn={{ urlquery .Result.title }}"
+    details:
+      text: "https://thepiratebay.org/description.php?id={{ .Result._id }}"
+    size:
+      selector: size
+    seeders:
+      selector: seeders
+    leechers:
+      selector: leechers
+helix:
+  carries: [film, tv, anime, music, other]

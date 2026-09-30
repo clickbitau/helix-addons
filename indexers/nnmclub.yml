@@ -1,0 +1,77 @@
+# NoNaMe Club — Helix-written definition (D38). Replaces the compiled-in
+# client. A phpBB forum served as windows-1251: the query goes out in the
+# site's bytes (its submit button's value is the Russian "Search") and the
+# page comes back converted.
+id: nnmclub
+name: NoNaMe Club
+description: "A general Russian tracker: film, television, music, software, books. Free registration; most of it is readable without one. Without a login only freeleech torrents are handed over, so only those are asked for."
+language: ru-RU
+type: public
+encoding: windows-1251
+links:
+  - https://nnmclub.to/
+caps:
+  categorymappings:
+    - {id: 1, cat: Movies}
+    - {id: 2, cat: TV}
+    - {id: 3, cat: Audio}
+    - {id: 4, cat: Books}
+    - {id: 5, cat: Other}
+search:
+  paths:
+    - path: /forum/tracker.php
+      method: post
+  inputs:
+    # Every forum; Helix's own parser judges the release name.
+    "f[]": "-1"
+    o: "10"   # order by seeders
+    s: "2"    # descending
+    tm: "-1"
+    shf: "1"
+    sha: "1"
+    ta: "-1"
+    sns: "-1"
+    # Freeleech only, and not a preference: without an account those are
+    # the only torrents the site hands over.
+    sds: "4"
+    nm: "{{ .Keywords }}"
+    submit: "Поиск"
+  headers:
+    Referer: https://nnmclub.to/forum/tracker.php
+  rows:
+    selector: "table.forumline.tablesorter tr:has(a[href^='viewtopic.php?t='])"
+  fields:
+    title:
+      selector: "a[href^='viewtopic.php?t=']"
+    download:
+      selector: "a[href^='download.php?id=']"
+      attribute: href
+      filters:
+        - {prepend: "/forum/"}
+    details:
+      selector: "a[href^='viewtopic.php?t=']"
+      attribute: href
+      filters:
+        - {prepend: "/forum/"}
+    category:
+      selector: "a[href^='tracker.php?f=']"
+      optional: true
+    # The size cell holds the exact byte count in a <u> beside the human
+    # form; the exact one is the better answer.
+    size:
+      selector: "td:nth-child(6) u"
+      optional: true
+    seeders:
+      selector: "td.seedmed"
+      optional: true
+    leechers:
+      selector: "td.leechmed"
+      optional: true
+    # A unix timestamp in the last cell's <u>; the visible day-month-year
+    # beside it is ambiguous to every date parser going.
+    date:
+      selector: "td:last-child u"
+      optional: true
+helix:
+  carries: [film, tv, anime, music, other]
+  expect: "table.forumline.tablesorter"

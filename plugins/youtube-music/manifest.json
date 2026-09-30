@@ -1,0 +1,25 @@
+{
+  "id": "youtube-music",
+  "name": "YouTube Music",
+  "version": "2.2.0",
+  "author": "Helix",
+  "description": "Search YouTube Music, see your saved albums, artists, liked songs, playlists and listening history, and add their albums to Helix. Signs in with your own browser: no Google Cloud project, no weekly sign-in. Reads YouTube Music's own web API for names and covers only. Play opens the YouTube Music app: Helix never copies YouTube's audio.",
+  "icon": "icon.svg",
+  "helix": ">=1.028",
+  "entry": "plugin.js",
+  "sha256": "637c498feee133ed2598c733c58c2f5e97413416e12451431cafa10c2ebaa40e",
+  "capabilities": ["search", "album", "playlists", "library-sync", "history"],
+  "auth": {
+    "type": "browser-cookie",
+    "loginUrl": "https://music.youtube.com/",
+    "cookieHosts": ["music.youtube.com"],
+    "sapisidhash": true,
+    "label": "Cookie request header from music.youtube.com",
+    "setup": "1. On a computer, open https://music.youtube.com in your browser, signed in to your account.\n2. Open the developer tools (F12, or Cmd+Option+I on a Mac) and choose the Network tab.\n3. Click Library or reload the page, then type browse in the filter box and click any browse request.\n4. Under Request Headers, copy the whole value of Cookie. (Or right-click the request and choose Copy as cURL.)\n5. Paste it into Helix.\nThe cookie is your YouTube sign-in: Helix keeps it encrypted on the server and sends it only to music.youtube.com. It usually lasts until you sign out of YouTube in that browser; if Helix asks again later, copy a fresh one."
+  },
+  "hosts": ["music.youtube.com"],
+  "settings": [
+    {"key": "region", "label": "Region", "type": "string", "default": "",
+     "description": "Two-letter country code that search results are ranked for, like AU. Empty uses the account's."}
+  ]
+}

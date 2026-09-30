@@ -1,0 +1,66 @@
+# Uindex — Helix-written definition (D38). Replaces the compiled-in client.
+id: uindex
+name: Uindex
+description: "A general public tracker, behind Cloudflare: an ordinary request answers \"Just a moment...\" every time, so the solver is how the first search gets through."
+language: en-US
+type: public
+links:
+  - https://uindex.org/
+caps:
+  categorymappings:
+    - {id: 1, cat: Movies}
+    - {id: 2, cat: TV}
+    - {id: 3, cat: Console}
+    - {id: 4, cat: Audio}
+    - {id: 5, cat: PC}
+    - {id: 6, cat: XXX}
+    - {id: 7, cat: TV/Anime}
+    - {id: 8, cat: Other}
+search:
+  paths:
+    - path: /search.php
+  inputs:
+    search: "{{ .Keywords }}"
+    # Every category in one request. The site's own filter is not trusted:
+    # results come back tagged 0 for a category it refuses as a filter.
+    c: "0"
+  rows:
+    # The header row and the lone "No results found." cell have fewer than
+    # three cells and are not rows that failed to read.
+    selector: "#results-area table tr:has(td + td + td)"
+  fields:
+    magnet:
+      selector: "a[href^='magnet:']"
+      attribute: href
+    # The details link's title attribute is the name as the site stores it;
+    # older layouts have none, and the text (search term in <mark>) reads
+    # the same once flattened.
+    _title_attr:
+      selector: "a[href*='details.php?id=']"
+      attribute: title
+      optional: true
+    _title_text:
+      selector: "a[href*='details.php?id=']"
+    title:
+      text: "{{ if .Result._title_attr }}{{ .Result._title_attr }}{{ else }}{{ .Result._title_text }}{{ end }}"
+    details:
+      selector: "a[href*='details.php?id=']"
+      attribute: href
+    category:
+      selector: "td.sr-col-cat a"
+      optional: true
+    size:
+      selector: "td.sr-col-size"
+    date:
+      selector: "td.sr-col-uploaded"
+      optional: true
+    seeders:
+      selector: "td.sr-col-seeders"
+    leechers:
+      selector: "td.sr-col-leechers"
+helix:
+  carries: [film, tv, anime, music, other]
+  solver: required
+  # The results container outlived two table redesigns: its absence means
+  # the page was something else — a maintenance notice, an interstitial.
+  expect: "#results-area"

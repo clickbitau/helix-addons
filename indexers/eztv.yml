@@ -1,0 +1,48 @@
+# EZTV — Helix-written definition (D38). Replaces the compiled-in client.
+# The API takes no free text at all, only the show's imdb id: a query
+# without one is never sent.
+id: eztv
+name: EZTV
+description: "Western television only, no anime. Its API takes just the show's imdb id, so it answers automatic searches for identified shows; the free-text box gets nothing."
+language: en-US
+type: public
+links:
+  - https://eztvx.to/
+caps:
+  categorymappings:
+    - {id: sd, cat: TV/SD}
+    - {id: hd, cat: TV/HD}
+search:
+  paths:
+    - path: /api/get-torrents
+      response:
+        type: json
+  inputs:
+    imdb_id: "{{ .Query.IMDBIDShort }}"
+    limit: "100"
+  rows:
+    selector: torrents
+  fields:
+    title:
+      selector: filename
+      filters:
+        - {re_replace: ["\\.mkv$", ""]}
+    magnet:
+      selector: magnet_url
+    details:
+      selector: episode_url
+      optional: true
+    seeders:
+      selector: seeds
+      optional: true
+    leechers:
+      selector: peers
+      optional: true
+    size:
+      selector: size_bytes
+      optional: true
+    category:
+      text: TV
+helix:
+  carries: [tv]
+  requires: [imdbid]

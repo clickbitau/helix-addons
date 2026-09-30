@@ -1,0 +1,61 @@
+# Knaben — Helix-written definition (D38). Replaces the compiled-in client.
+# A JSON API: POST to the bare /v1 path (it 404s with a /search suffix).
+id: knaben
+name: Knaben
+description: "A database mirroring most public trackers' catalogues — one search covers 1337x, TPB, EZTV and the rest at once. Real JSON API, no account, no Cloudflare."
+language: en-US
+type: public
+links:
+  - https://api.knaben.org/
+caps:
+  categorymappings:
+    - {id: 3000000, cat: Movies}
+    - {id: 2000000, cat: TV}
+    - {id: 1001000, cat: Audio}
+    - {id: 6000000, cat: TV/Anime}
+    - {id: 4000000, cat: PC}
+    - {id: 5000000, cat: Console}
+    - {id: 7000000, cat: Books}
+    - {id: 9000000, cat: Other}
+search:
+  paths:
+    - path: /v1
+      method: post
+      response:
+        type: json
+  headers:
+    Content-Type: application/json
+  inputs:
+    # Knaben's own category numbers, per its public API docs.
+    $raw: >-
+      {"search_type":"100%","search_field":"title","query":{{ json .Keywords }},"order_by":"seeders","order_direction":"desc","size":150{{ if eq .Query.Kind "movie" }},"categories":[3000000]{{ else if eq .Query.Kind "tv" }},"categories":[2000000]{{ else if eq .Query.Kind "music" }},"categories":[1001000,1002000]{{ end }}}
+  rows:
+    selector: hits
+  fields:
+    title:
+      selector: title
+    magnet:
+      selector: magnetUrl
+      optional: true
+    # Some mirrors carry no magnet; the .torrent address stands in.
+    download:
+      selector: link
+      optional: true
+    details:
+      selector: details
+      optional: true
+    size:
+      selector: bytes
+      optional: true
+    seeders:
+      selector: seeders
+      optional: true
+    leechers:
+      selector: peers
+      optional: true
+    date:
+      selector: date
+      optional: true
+helix:
+  carries: [film, tv, anime, music, other]
+  expect: hits

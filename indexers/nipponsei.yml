@@ -1,0 +1,39 @@
+# Nipponsei — Helix-written definition (D38). Replaces the compiled-in client.
+id: nipponsei
+name: Nipponsei
+description: "Anime soundtracks and singles. Music only — skipped for a film or television search, which is the category filter working, not a failure."
+language: en-US
+type: public
+links:
+  - https://nipponsei.minglong.org/
+caps:
+  categorymappings:
+    - {id: 1, cat: Audio}
+search:
+  paths:
+    - path: /index.php
+  inputs:
+    section: Tracker
+    search: "{{ .Keywords }}"
+  rows:
+    selector: "tr.odd:has(td + td + td), tr.even:has(td + td + td)"
+  fields:
+    title:
+      selector: "a"
+      filters:
+        # The site's own tag is noise in a release name, and release.go
+        # would take it for a group.
+        - {re_replace: ["^\\s*\\[Nipponsei\\]\\s*", ""]}
+    download:
+      selector: "a"
+      attribute: href
+    category:
+      text: Audio
+    # Torrent, Seeds, Leech, Downloads — there is no size column at all.
+    seeders:
+      selector: "td:nth-child(2)"
+    leechers:
+      selector: "td:nth-child(3)"
+helix:
+  carries: [music]
+  expect: "tr.tracker_head"

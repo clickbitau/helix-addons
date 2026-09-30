@@ -1,0 +1,22 @@
+{
+  "id": "amazon-music",
+  "name": "Amazon Music",
+  "version": "1.1.0",
+  "author": "Helix",
+  "description": "Needs Amazon developer access: the Amazon Music Web API is a closed beta. Search Amazon Music, see your playlists and library, and add their albums to Helix. Play opens the Amazon Music app.",
+  "icon": "icon.svg",
+  "helix": ">=1.028",
+  "entry": "plugin.js",
+  "sha256": "49f6ed7a6e76f50030f993813f28aad25147e5f06eedc9b845a4ee74a49d56dd",
+  "capabilities": ["search", "album", "playlists", "library-sync"],
+  "auth": {
+    "type": "oauth2",
+    "flow": "pkce",
+    "authorizeUrl": "https://www.amazon.com/ap/oa",
+    "tokenUrl": "https://api.amazon.com/auth/o2/token",
+    "scopes": ["profile", "music::catalog", "music::library", "music::profile"],
+    "clientHeader": "x-api-key",
+    "setup": "Needs Amazon developer access to the Amazon Music Web API (closed beta). With it, make a Login with Amazon security profile and put its client_id, client_secret, the Security Profile ID (as api_key) and an allowed return URL (as redirect_uri) in config.json under music_plugins.amazon-music."
+  },
+  "hosts": ["api.amazon.com", "api.music.amazon.dev"]
+}

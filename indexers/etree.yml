@@ -1,0 +1,45 @@
+# BT.etree — Helix-written definition (D38). Replaces the compiled-in client.
+id: etree
+name: BT.etree
+description: "Live concert recordings — lossless tapes of trader-friendly bands. Music only. Behind Cloudflare, so the solver is how the first search gets through."
+language: en-US
+type: public
+links:
+  - https://bt.etree.org/
+caps:
+  categorymappings:
+    - {id: 1, cat: Audio/Lossless}
+search:
+  paths:
+    # browse.php, not index.php: index.php ignores the query and serves the
+    # newest uploads, which parse perfectly and are never what was asked.
+    - path: /browse.php
+  inputs:
+    searchzzzz: "{{ .Keywords }}"
+  rows:
+    selector: "tr:has(a.details_link)"
+  fields:
+    title:
+      selector: "a.details_link"
+    download:
+      selector: "a[href^='download.php/']"
+      attribute: href
+    category:
+      selector: "td:first-child"
+      optional: true
+    # The column set varies with site settings, so nothing is read by
+    # position: the size is the one link-free cell that reads as one.
+    size:
+      selector: "td:not(:has(a)):matchesOwn(^\\s*[\\d.,]+\\s*[KMGT]i?B\\s*$)"
+      optional: true
+    seeders:
+      selector: "a[href*='#seeders']"
+      optional: true
+    leechers:
+      selector: "a[href*='#leechers']"
+      optional: true
+helix:
+  carries: [music]
+  solver: required
+  # The search box is on every page the tracker serves.
+  expect: "input[name='searchzzzz']"

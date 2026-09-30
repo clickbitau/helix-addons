@@ -1,0 +1,62 @@
+# Nyaa — Helix-written definition (D38). Not derived from any Jackett or
+# Prowlarr file. Replaces the compiled-in RSS client: the HTML search page
+# carries the same 75 rows, the same order, the same .torrent link, and the
+# info hash in each row's magnet.
+id: nyaa
+name: Nyaa
+description: "Anime, public. English-translated anime only (1_2): raws and music are left out. Asked for anime and nothing else."
+language: en-US
+type: public
+links:
+  - https://nyaa.si/
+caps:
+  categorymappings:
+    - {id: 1_2, cat: TV/Anime, desc: "Anime - English-translated"}
+search:
+  paths:
+    - path: /
+  inputs:
+    # The title alone, not "Title S01E05": anime releases number episodes
+    # " - 05", so the SxxEyy form matches almost nothing here.
+    q: "{{ .Query.Term }}"
+    c: "1_2"
+    # No filter: trusted-only hides good releases.
+    f: "0"
+  response:
+    noResultsMessage: "No results found"
+  rows:
+    selector: "table.torrent-list tbody tr"
+  fields:
+    category:
+      selector: "td:nth-child(1) a"
+      attribute: title
+      optional: true
+    title:
+      # The comments badge is also a /view/ link inside the same cell.
+      selector: "td:nth-child(2) a[href^='/view/']:not(.comments)"
+      attribute: title
+    details:
+      selector: "td:nth-child(2) a[href^='/view/']:not(.comments)"
+      attribute: href
+    download:
+      selector: "td:nth-child(3) a[href$='.torrent']"
+      attribute: href
+    infohash:
+      selector: "td:nth-child(3) a[href^='magnet:']"
+      attribute: href
+      optional: true
+      filters:
+        - {regexp: "btih:([0-9a-fA-F]{40})"}
+    size:
+      selector: "td:nth-child(4)"
+    date:
+      selector: "td[data-timestamp]"
+      attribute: data-timestamp
+      optional: true
+    seeders:
+      selector: "td:nth-child(6)"
+    leechers:
+      selector: "td:nth-child(7)"
+helix:
+  carries: [anime]
+  expect: "table.torrent-list"
