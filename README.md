@@ -1,9 +1,8 @@
 # Helix add-ons
 
-Community-maintained add-on definitions for [Helix](https://github.com/clickbitau/helix):
-tracker indexers and music service plugins. All definitions here are original
-Helix/community work — no Jackett or Prowlarr definition files (GPL) are
-accepted or bundled.
+A public collection of community-maintained add-ons for [Helix](https://github.com/clickbitau/helix),
+including tracker indexers and music service plugins. Anyone can propose an
+add-on through a pull request.
 
 ## Indexers (`indexers/`)
 
@@ -33,11 +32,19 @@ add-on. Use of any add-on is entirely at your own risk; you are responsible
 for complying with each site's terms of use, robots and rate-limit policies,
 and the law where you are.
 
+## Licensing
+
+This collection accepts add-ons under open-source licenses, including
+[MIT](LICENSE) and [GPLv3](LICENSES/GPL-3.0.txt). The root MIT license is the
+default. If an add-on uses another license, identify it in the add-on’s README
+and include its license text alongside the add-on. For single-file indexer
+definitions, identify the license in a header comment and link to the included
+license text.
+
 ## Contributing
 
-Pull requests welcome. Requirements:
-
-- Indexer definitions must be original work — do not submit files copied or
-  derived from Jackett/Prowlarr (GPL).
-- One tracker / one service per PR, tested against the live site.
+- Submit one add-on per pull request and describe how you tested it.
+- You can submit original or adapted work. For adapted work, identify the
+  upstream source and revision, preserve copyright and license notices, and
+  follow the applicable license terms.
 - Keep changes minimal and match the existing file style.
