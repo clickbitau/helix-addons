@@ -1,7 +1,7 @@
 # Helix add-ons
 
 A public collection of community-maintained add-ons for [Helix](https://github.com/clickbitau/helix),
-including tracker indexers and music service plugins. Anyone can propose an
+including tracker indexers, music service plugins, and streaming add-ons. Anyone can propose an
 add-on through a pull request.
 
 ## Indexers (`indexers/`)
@@ -20,6 +20,11 @@ format only covers what it can express.
 
 Sandboxed JavaScript plugins — `manifest.json` + `plugin.js` (+ icon) per
 service. Install or update from the console's plugin section.
+
+## Streaming add-ons (`streaming/`)
+
+[Streambert](streaming/streambert/README.md) runs as a standalone Stremio-protocol
+add-on for operator-configured media.
 
 ## Disclaimer
 
