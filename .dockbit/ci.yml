@@ -1,0 +1,28 @@
+# DockBit CI (docs/NATIVE-CI.md). Validates the add-ons: indexer YAML parses, plugin manifests are JSON, plugin code parses.
+jobs:
+  validate:
+    image: node:22-bookworm
+    when: [pull_request, push]
+    timeout: 10
+    steps:
+      - name: Indexer definitions are valid YAML
+        run: |
+          apt-get update -qq && apt-get install -y -qq --no-install-recommends python3-yaml >/dev/null
+          python3 - <<'PY'
+          import glob, sys, yaml
+          bad = 0
+          for f in sorted(glob.glob("indexers/*.yml")):
+              try:
+                  d = yaml.safe_load(open(f))
+                  assert isinstance(d, dict), "top level is not a mapping"
+                  assert d.get("id") or d.get("name"), "no id or name"
+              except Exception as e:
+                  print(f"{f}: {e}"); bad = 1
+          sys.exit(bad)
+          PY
+      - name: Plugins have a valid manifest and parseable code
+        run: |
+          for d in plugins/*/; do
+            node -e "JSON.parse(require('fs').readFileSync('${d}manifest.json','utf8'))" || exit 1
+            node --check "${d}plugin.js" || exit 1
+          done
